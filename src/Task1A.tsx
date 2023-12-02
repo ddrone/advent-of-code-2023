@@ -27,7 +27,7 @@ interface Digit {
   location: number;
 }
 
-function findFirstAndLastDigits(input: string): [Digit, Digit] {
+function findFirstAndLastDigits(input: string): [Digit|undefined, Digit|undefined] {
   let firstDigit: Digit|undefined;
   let lastDigit: Digit|undefined;
 
@@ -44,10 +44,6 @@ function findFirstAndLastDigits(input: string): [Digit, Digit] {
       firstDigit = digit;
     }
     lastDigit = digit;
-  }
-
-  if (firstDigit === undefined || lastDigit === undefined) {
-    throw new Error('no digits found!');
   }
 
   return [firstDigit, lastDigit];
@@ -67,20 +63,26 @@ function solve1BLine(input: string): number {
   let [firstDigit, lastDigit] = findFirstAndLastDigits(input);
   for (let i = 0; i < digits.length; i += 2) {
     const firstOcc = input.indexOf(digits[i]);
-    if (firstOcc !== -1 && firstOcc < firstDigit.location) {
-      firstDigit = {
-        digit: digits[i + 1],
-        location: firstOcc
+    if (firstOcc !== -1) {
+      if (firstDigit === undefined || firstOcc < firstDigit.location) {
+        firstDigit = {
+          digit: digits[i + 1],
+          location: firstOcc
+        };
       }
 
       const lastOcc = input.lastIndexOf(digits[i]);
-      if (lastDigit.location < lastOcc) {
+      if (lastDigit === undefined || lastDigit.location < lastOcc) {
         lastDigit = {
           digit: digits[i + 1],
           location: lastOcc
         }
       }
     }
+  }
+
+  if (firstDigit === undefined || lastDigit === undefined) {
+    throw new Error('no digits found!');
   }
 
   return digitNum(firstDigit.digit) * 10 + digitNum(lastDigit.digit);
