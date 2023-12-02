@@ -1,3 +1,9 @@
+# Advent of Code 2023 solutions
+
+As a client-side JS app, for no particular reason.
+
+Default README.md of starter Vite template follows in case I'll need it later
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
