@@ -52,9 +52,17 @@ function parseGame(game: string): Game {
   return { id, hands };
 }
 
+function handPossible(hand: Hand): boolean {
+  return hand.red <= 12 && hand.green <= 13 && hand.blue <= 14;
+}
+
+function gamePossible(game: Game): boolean {
+  return game.hands.map(handPossible).reduce((x, y) => x && y);
+}
+
 export function solve2A(input: string): string {
   console.log(input);
   const lines = input.split('\n');
-  console.log(lines.map(parseGame));
-  return '';
+  const output = lines.map(parseGame).filter(gamePossible).map(game => game.id).reduce((x, y) => x + y);
+  return `${output}`;
 }
