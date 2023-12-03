@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 
+type ValidOutput = string | number;
+
 interface InteractorProps {
-  process: (input: string) => string;
+  process: (input: string) => ValidOutput;
+}
+
+function outputToString(output: ValidOutput): string {
+  if (typeof output === 'number') {
+    return `${output}`;
+  }
+  return output;
 }
 
 interface InteractorState {
@@ -25,7 +34,7 @@ function Interactor(props: InteractorProps) {
   function inputChange(input: string) {
     window.localStorage.setItem(key, input);
     try {
-      const output = props.process(input);
+      const output = outputToString(props.process(input));
       setState({kind: 'ok', message: output, input});
     }
     catch (e) {
