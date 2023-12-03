@@ -22,14 +22,13 @@ function parseHand(hand: string): Hand {
       throw new Error(`can't parse hand ${hand}`);
     }
 
-    console.log(pair);
     const count = Number(pair[0]);
     switch (pair[1]) {
       case 'blue':
         result.blue = count;
         break;
       case 'red':
-        result.blue = count;
+        result.red = count;
         break;
       case 'green':
         result.green = count;
