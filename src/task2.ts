@@ -60,9 +60,28 @@ function gamePossible(game: Game): boolean {
   return game.hands.map(handPossible).reduce((x, y) => x && y);
 }
 
+function maxHand(h1: Hand, h2: Hand): Hand {
+  return {
+    red: Math.max(h1.red, h2.red),
+    green: Math.max(h1.green, h2.green),
+    blue: Math.max(h1.blue, h2.blue)
+  };
+}
+
+function handPower(h: Hand): number {
+  return h.red * h.green * h.blue;
+}
+
 export function solve2A(input: string): string {
   console.log(input);
   const lines = input.split('\n');
   const output = lines.map(parseGame).filter(gamePossible).map(game => game.id).reduce((x, y) => x + y);
+  return `${output}`;
+}
+
+export function solve2B(input: string): string {
+  console.log(input);
+  const lines = input.split('\n');
+  const output = lines.map(parseGame).map(game => game.hands.reduce(maxHand)).map(handPower).reduce((x, y) => x + y);
   return `${output}`;
 }
