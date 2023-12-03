@@ -1,3 +1,5 @@
+import { add } from "./operators";
+
 function processLine(input: string): number {
   let firstDigit = -1;
   let lastDigit = -1;
@@ -90,12 +92,12 @@ function solve1BLine(input: string): number {
 
 export function solve1A(input: string): string {
   const results = input.split('\n').map(processLine);
-  const sum = results.reduce((x, y) => x + y);
+  const sum = results.reduce(add);
   return `${sum}`;
 }
 
 export function solve1B(input: string): string {
   const inputs = input.split('\n').map(solve1BLine);
-  const sum = inputs.reduce((x, y) => x + y);
+  const sum = inputs.reduce(add);
   return `${sum}`;
 }

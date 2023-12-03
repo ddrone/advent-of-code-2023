@@ -1,3 +1,5 @@
+import { add, concatArrays } from "./operators";
+
 interface GridNumber {
   rowIndex: number;
   colIndex: number;
@@ -50,5 +52,5 @@ function isPart(n: GridNumber, grid: string[]): boolean {
 
 export function solve3A(input: string): number {
   const grid = input.split('\n');
-  return grid.map(findNumbers).reduce((x, y) => x.concat(y)).filter(n => isPart(n, grid)).map(n => n.number).reduce((x, y) => x + y);
+  return grid.map(findNumbers).reduce(concatArrays).filter(n => isPart(n, grid)).map(n => n.number).reduce(add);
 }

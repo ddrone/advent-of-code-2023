@@ -1,3 +1,5 @@
+import { add } from "./operators";
+
 interface Hand {
   red: number;
   green: number;
@@ -74,12 +76,12 @@ function handPower(h: Hand): number {
 
 export function solve2A(input: string): number {
   const lines = input.split('\n');
-  const output = lines.map(parseGame).filter(gamePossible).map(game => game.id).reduce((x, y) => x + y);
+  const output = lines.map(parseGame).filter(gamePossible).map(game => game.id).reduce(add);
   return output;
 }
 
 export function solve2B(input: string): number {
   const lines = input.split('\n');
-  const output = lines.map(parseGame).map(game => game.hands.reduce(maxHand)).map(handPower).reduce((x, y) => x + y);
+  const output = lines.map(parseGame).map(game => game.hands.reduce(maxHand)).map(handPower).reduce(add);
   return output;
 }
