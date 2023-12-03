@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface InteractorProps {
   process: (input: string) => string;
@@ -6,26 +6,37 @@ interface InteractorProps {
 
 interface InteractorState {
   kind: 'ok' | 'error';
-  message: string
+  message: string;
+  input: string;
 }
 
-function Interactor(props: InteractorProps) {
-  const [state, setState] = useState<InteractorState>({kind: 'ok', message: ''});
+const key = 'interactor-data';
 
-  function inputChange(e: ChangeEvent<HTMLTextAreaElement>) {
+function Interactor(props: InteractorProps) {
+  const [state, setState] = useState<InteractorState>({kind: 'ok', input: '', message: ''});
+
+  useEffect(() => {
+    const value = window.localStorage.getItem(key);
+    if (value !== null) {
+      inputChange(value);
+    }
+  }, []);
+
+  function inputChange(input: string) {
+    window.localStorage.setItem(key, input);
     try {
-      const output = props.process(e.target.value);
-      setState({kind: 'ok', message: output});
+      const output = props.process(input);
+      setState({kind: 'ok', message: output, input});
     }
     catch (e) {
-      setState({kind: 'error', message: 'Look in devtools'});
+      setState({kind: 'error', message: 'Look in devtools', input});
       throw e;
     }
   }
 
   return (
     <>
-      <textarea onChange={inputChange}></textarea>
+      <textarea onChange={e => inputChange(e.target.value)} value={state.input}></textarea>
       <pre className={`message-${state.kind}`}>
         {state.message}
       </pre>
