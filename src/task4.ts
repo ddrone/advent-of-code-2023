@@ -45,8 +45,29 @@ function countScore(card: Card): number {
   return result;
 }
 
+function countWinning(card: Card): number {
+  return card.winning.filter(e => card.selected.has(e)).length;
+}
+
+function countCards(cards: Card[]): number[] {
+  const result: number[] = new Array(cards.length).fill(1);
+
+  for (let i = 0; i < cards.length; i++) {
+    const winning = countWinning(cards[i]);
+    for (let j = 1; j <= winning && i + j < cards.length; j++) {
+      result[i + j] += result[i];
+    }
+  }
+
+  return result;
+}
 
 export function solve4A(input: string): number {
   const output = input.split('\n').map(parseCard).map(countScore).reduce(add);
   return output;
+}
+
+export function solve4B(input: string): number {
+  const cards = countCards(input.split('\n').map(parseCard))
+  return cards.reduce(add);
 }
