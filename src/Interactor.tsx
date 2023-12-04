@@ -39,7 +39,7 @@ function Interactor(props: InteractorProps) {
     }
     catch (e) {
       setState({kind: 'error', message: 'Look in devtools', input});
-      throw e;
+      console.error(e);
     }
   }
 
