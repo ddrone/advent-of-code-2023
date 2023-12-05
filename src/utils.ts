@@ -10,3 +10,11 @@ export function readNumbers(input: string): number[] {
   return result;
 }
 
+export function ensureMatch(pattern: RegExp, text: string): RegExpMatchArray {
+  const result = text.match(pattern);
+  if (result === null) {
+    throw new Error('match failed!');
+  }
+
+  return result;
+}
