@@ -18,3 +18,15 @@ export function ensureMatch(pattern: RegExp, text: string): RegExpMatchArray {
 
   return result;
 }
+
+export function pairs<T>(input: T[]): [T, T][] {
+  if (input.length % 2 !== 0) {
+    throw new Error('parity error');
+  }
+
+  const result: [T, T][] = [];
+  for (let i = 0; i + 1 < input.length; i += 2) {
+    result.push([input[i], input[i + 1]]);
+  }
+  return result;
+}
