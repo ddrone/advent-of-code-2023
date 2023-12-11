@@ -83,7 +83,7 @@ function oppositeDirection(dir: Direction): Direction {
     case 'up':
       return 'down';
     case 'down':
-      return 'left';
+      return 'up';
   }
 }
 
@@ -119,6 +119,7 @@ export function solve10A(input: string): number {
     dist.set(key, currDist);
     maxDist = Math.max(maxDist, currDist);
     const nexts = adjacentDirections(grid, pos).map(dir => applyDirection(pos, dir));
+    console.log({i, pos, currDist, nexts});
     for (const next of nexts) {
       queue.push([next, currDist + 1]);
     }
