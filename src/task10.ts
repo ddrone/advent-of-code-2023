@@ -97,7 +97,32 @@ function startConnected(grid: string[], startPos: Pos, dir: Direction): boolean 
   return newConnected.findIndex(v => v === oppositeDirection(dir)) !== -1;
 }
 
+function posKey(pos: Pos): string {
+  const [row, col] = pos;
+  return `${row}:${col}`
+}
+
 export function solve10A(input: string): number {
   const grid = input.split('\n');
-  return 0;
+  const startPos = findStart(grid);
+  const dist = new Map<string, number>;
+  const queue: [Pos, number][] = [[startPos, 0]];
+  let maxDist = 0;
+
+  for (let i = 0; i < queue.length; i++) {
+    const [pos, currDist] = queue[i];
+    const key = posKey(pos);
+    if (dist.has(key)) {
+      continue;
+    }
+
+    dist.set(key, currDist);
+    maxDist = Math.max(maxDist, currDist);
+    const nexts = adjacentDirections(grid, pos).map(dir => applyDirection(pos, dir));
+    for (const next of nexts) {
+      queue.push([next, currDist + 1]);
+    }
+  }
+
+  return maxDist;
 }
