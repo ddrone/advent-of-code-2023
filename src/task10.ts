@@ -127,6 +127,9 @@ export function solve10A(input: string): number {
   return maxDist;
 }
 
+type ScanState = 'in' | 'out' | 'pipe_from_out' | 'pipe_from_in';
+type BoundaryState = 'nbd' | 'boundary_bot' | 'boundary_top';
+
 export function solve10B(input: string): number {
   const grid = input.split('\n');
   const startPos = findStart(grid);
@@ -147,27 +150,84 @@ export function solve10B(input: string): number {
     }
   }
 
+  const startAdjacent = new Set(adjacentDirections(grid, startPos));
+  if (startAdjacent.size !== 2) {
+    throw new Error('unknown replacement');
+  }
+
+  const startRow = startPos[0];
+  if (startAdjacent.has('down') && startAdjacent.has('right')) {
+    grid[startRow] = grid[startRow].replace('S', 'F');
+  }
+  else if (startAdjacent.has('up') && startAdjacent.has('down')) {
+    grid[startRow] = grid[startRow].replace('S', '|');
+  }
+  else {
+    console.log(startAdjacent);
+    throw new Error('unhandled option');
+  }
+
   let insideCount = 0;
   for (let row = 0; row < grid.length; row++) {
     let inside = false;
-    let lastPipe = false;
+    let state: BoundaryState = 'nbd';
+
     for (let col = 0; col < grid[row].length; col++) {
-      const key = posKey([row, col]);
+      const pos: Pos = [row, col];
+      const key = posKey(pos);
 
       if (dist.has(key)) {
-        // Inside the pipe
-        lastPipe = true;
+        const c = indexGrid(grid, pos);
+        switch (state) {
+          case 'nbd': {
+            switch (c) {
+              case 'F':
+                state = 'boundary_bot';
+                break;
+              case '|':
+                inside = !inside;
+                break;
+              case 'L':
+                state = 'boundary_top';
+                break;
+              default:
+                throw new Error(`unexpected char ${c}`);
+            }
+            break;
+          }
+          case 'boundary_bot':
+            switch (c) {
+              case '7':
+                state = 'nbd';
+                break;
+              case '-':
+                break;
+              case 'J':
+                state = 'nbd';
+                inside = !inside;
+                break;
+              default:
+                throw new Error(`unexpected char ${c}`);
+            }
+            break;
+          case 'boundary_top':
+            switch (c) {
+              case '7':
+                state = 'nbd';
+                inside = !inside;
+                break;
+              case '-':
+                break;
+              case 'J':
+                state = 'nbd';
+                break;
+              default:
+                throw new Error(`unexpected char ${c}`);
+            }
+        }
       }
-      else {
-        // Not inside the main pipe loop
-        if (lastPipe) {
-          inside = !inside;
-          lastPipe = false;
-        }
-        if (inside) {
-          console.log({row, col});
-          insideCount++;
-        }
+      else if (inside && state === 'nbd') {
+        insideCount++;
       }
     }
   }
