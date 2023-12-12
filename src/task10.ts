@@ -119,11 +119,58 @@ export function solve10A(input: string): number {
     dist.set(key, currDist);
     maxDist = Math.max(maxDist, currDist);
     const nexts = adjacentDirections(grid, pos).map(dir => applyDirection(pos, dir));
-    console.log({i, pos, currDist, nexts});
     for (const next of nexts) {
       queue.push([next, currDist + 1]);
     }
   }
 
   return maxDist;
+}
+
+export function solve10B(input: string): number {
+  const grid = input.split('\n');
+  const startPos = findStart(grid);
+  const dist = new Map<string, number>;
+  const queue: [Pos, number][] = [[startPos, 0]];
+
+  for (let i = 0; i < queue.length; i++) {
+    const [pos, currDist] = queue[i];
+    const key = posKey(pos);
+    if (dist.has(key)) {
+      continue;
+    }
+
+    dist.set(key, currDist);
+    const nexts = adjacentDirections(grid, pos).map(dir => applyDirection(pos, dir));
+    for (const next of nexts) {
+      queue.push([next, currDist + 1]);
+    }
+  }
+
+  let insideCount = 0;
+  for (let row = 0; row < grid.length; row++) {
+    let inside = false;
+    let lastPipe = false;
+    for (let col = 0; col < grid[row].length; col++) {
+      const key = posKey([row, col]);
+
+      if (dist.has(key)) {
+        // Inside the pipe
+        lastPipe = true;
+      }
+      else {
+        // Not inside the main pipe loop
+        if (lastPipe) {
+          inside = !inside;
+          lastPipe = false;
+        }
+        if (inside) {
+          console.log({row, col});
+          insideCount++;
+        }
+      }
+    }
+  }
+
+  return insideCount;
 }
